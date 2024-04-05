@@ -2,13 +2,13 @@
 let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 
-const addTaskButton = document.querySelector('#addTaskButton')
+const addTaskButton = $('#addTaskButton')
 const formModal = $('#formModal')
-const toDoCards = $('todo-cards') 
+const toDoCards = $('#todo-cards') 
 const inProgessCards = $('#in-progress-cards');
 const doneCards = $('#doneCards');
 
-let droppableContainer = $('.swim-lanes')
+let droppableContainer = $('.lanes')
 
 
 // Todo: create a function to generate a unique task id
@@ -43,9 +43,9 @@ function renderTaskList() {}
     toDoCards.empty();
 
     taskList.forEach(function(newTaskCard) {
-        let divCard = $('<div>')
-        let todayFormatted = dayjs().format('MM/DD/YYYY')
-        divCard.css('max-width', '75%')
+        var divCard = $('<div>');
+        var todayFormatted = dayjs().format('MM/DD/YYYY');
+        divCard.css('max-width', '75%');
 
         if (dayjs(todayFormatted).isSame(dayjs(newTaskCard.dueDate))) {
             divCard.addClass('card task-card text-white bg-warning mb-4')
@@ -83,19 +83,15 @@ function renderTaskList() {}
         } else if (newTaskCard.status === "done"){
             divCard.appendTo(doneCards);
         }
+    
+    $(".task-card").draggable ({
 
-// make cards draggable
-
-
+    })
 })
-
-  
-  
 
 // Todo: create a function to handle adding a new task
  // form on modal - connect to button ADD, grab all items and set status of task and push to localS
-function handleAddTask(event){
-    event.preventDefault;
+function handleAddTask(){
 
     let cardId = generateTaskId().val();
     let taskTitle = document.getElementById('task-title').val();
@@ -123,7 +119,7 @@ function handleDeleteTask(event){
  // move from place to place
  // identify id, go through logic of changing status variable, re-run render TaskList
 function handleDrop(event, ui) {
-    event.preventDefault();
+    
 
     let card = ui.draggable[0];
     let parentId = card.parent().attr('id');
@@ -135,7 +131,7 @@ function handleDrop(event, ui) {
     }else if (parentId === "in-progress-cards"){
             card.appendTo(doneCards)
             card.attr('id', 'done-cards');
-        }else if (parentId === 'done'){
+        }else if (parentId === 'done-cards'){
             card.removeClass('bg-danger bg-warning').addClass('bg-light')
             card.attr('id', 'done-cards')
         }
@@ -152,6 +148,10 @@ $(document).ready(function () {
         format: 'mm/dd/yyyy',
       } );
     });
+
+    createTaskCard.on('click', handleAddTask)
+
+    renderTaskList();
 
     $('.lane').droppable({
         accept: '.draggable',
