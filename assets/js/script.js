@@ -1,5 +1,5 @@
 // Retrieve tasks and nextId from localStorage
-let taskList = JSON.parse(localStorage.getItem("tasks"));
+let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 
 const addTaskButton = $('#addTaskButton')
@@ -91,12 +91,13 @@ function renderTaskList() {}
 
 // Todo: create a function to handle adding a new task
  // form on modal - connect to button ADD, grab all items and set status of task and push to localS
+
 function handleAddTask(){
 
-    let cardId = generateTaskId().val();
-    let taskTitle = document.getElementById('task-title').val();
-    let taskDueDate = document.getElementById('task-due-date').val();
-    let taskDescription = document.getElementById('task-description').val();
+    const cardId = generateTaskId().val();
+    const taskTitle = document.getElementById('task-title').val();
+    const taskDueDate = document.getElementById('task-due-date').val();
+    const taskDescription = document.getElementById('task-description').val();
 
     createTaskCard( cardId, taskTitle, taskDueDate, taskDescription)
 
@@ -143,13 +144,12 @@ $(document).ready(function () {
 
     $(addTaskButton).on('click', handleAddTask)
 
-    $(function() {
-        $( "#datepicker" ).datepicker({
-        format: 'mm/dd/yyyy',
-      } );
+   
+    $( '#datepicker' ).datepicker({
+        dateFormat: 'mm/dd/yyyy'
     });
 
-    createTaskCard.on('click', handleAddTask)
+    addTaskButton.on('click', handleAddTask)
 
     renderTaskList();
 
