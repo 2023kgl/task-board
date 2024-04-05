@@ -21,7 +21,7 @@ https://github.com/2023kgl/task-board
 
 https://2023kgl.github.io/task-board/
 
-    ![Task Board](./assets/images/taskboard.png)
+![Task Board](./assets/images/taskboard.png)
   
 ## Credits
 
