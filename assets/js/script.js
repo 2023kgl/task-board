@@ -1,15 +1,19 @@
-// Retrieve tasks and nextId from localStorage
-let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
-let nextId = JSON.parse(localStorage.getItem("nextId"));
-
 const addTaskButton = $('#addTaskButton')
 const formModal = $('#formModal')
 const toDoCards = $('#todo-cards') 
 const inProgessCards = $('#in-progress-cards');
 const doneCards = $('#doneCards');
+const createTask = $('#createTask')
+
+    // const taskTitle = $('#taskTitle').val();
+    // const taskDueDate = $('#datepicker').val(); 
+    // const taskDescription = $('#taskDescription').val(); 
 
 let droppableContainer = $('.lanes')
 
+// Retrieve tasks and nextId from localStorage
+let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
+let nextId = JSON.parse(localStorage.getItem("nextId"));
 
 // Todo: create a function to generate a unique task id
  // lets us reference particular id. incrementally add 1 to each new activity,
@@ -20,19 +24,36 @@ function generateTaskId() {
     return uniqTaskID
 }
 
+// Todo: create a function to handle adding a new task
+ // form on modal - connect to button ADD, grab all items and set status of task and push to localS
+
+ function handleAddTask(){
+
+    const cardId = generateTaskId(); 
+    const taskTitle = $('#taskTitle').val();
+    const taskDueDate = $('#datepicker').val(); 
+    const taskDescription = $('#taskDescription').val(); 
+
+    createTaskCard( cardId, taskTitle, taskDueDate, taskDescription);
+    localStorage.setItem('tasks', JSON.stringify(taskList));
+
+}
+
 // Todo: create a function to create a task card
  // assemble pieces of the task card, new div, bootstrap, body, text, delete button
  // jquery
 function createTaskCard(cardId, taskTitle, taskDueDate, taskDescription) {
+    
+    
    let newTask = {
     id: cardId,
-    title: taskTitle.value,
-    dueDate: taskDueDate.value,
-    description: taskDescription.value,
+    title: taskTitle,
+    dueDate: taskDueDate,
+    description: taskDescription,
     status: "to-do"
    }
       taskList.push(newTask)
-      localStorage.setItem('taskList', JSON.stringify(taskList));
+      localStorage.setItem('tasks', JSON.stringify(taskList));
 }
 
 // Todo: create a function to render the task list and make cards draggable
@@ -84,28 +105,17 @@ function renderTaskList() {}
             divCard.appendTo(doneCards);
         }
     
+        localStorage.setItem('tasks', JSON.stringify(taskList));
+
     $(".task-card").draggable ({
 
     })
 })
 
-// Todo: create a function to handle adding a new task
- // form on modal - connect to button ADD, grab all items and set status of task and push to localS
-
-function handleAddTask(){
-
-    const cardId = generateTaskId().val();
-    const taskTitle = document.getElementById('task-title').val();
-    const taskDueDate = document.getElementById('task-due-date').val();
-    const taskDescription = document.getElementById('task-description').val();
-
-    createTaskCard( cardId, taskTitle, taskDueDate, taskDescription)
-
-}
-
 // Todo: create a function to handle deleting a task
  // look a particular id, re-run renderTaskList function
-function handleDeleteTask(event){
+function handleDeleteTask(taskId){
+    
     for (let i = 0; i < taskList.length; i++){
     if (taskList[i].id == taskId){
     taskList.splice(i,1);
@@ -120,7 +130,7 @@ function handleDeleteTask(event){
  // move from place to place
  // identify id, go through logic of changing status variable, re-run render TaskList
 function handleDrop(event, ui) {
-    
+    event.preventDefault();
 
     let card = ui.draggable[0];
     let parentId = card.parent().attr('id');
@@ -136,6 +146,7 @@ function handleDrop(event, ui) {
             card.removeClass('bg-danger bg-warning').addClass('bg-light')
             card.attr('id', 'done-cards')
         }
+        localStorage.setItem('tasks', JSON.stringify(taskList));
     }
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
@@ -143,13 +154,12 @@ function handleDrop(event, ui) {
 $(document).ready(function () {
 
     $(addTaskButton).on('click', handleAddTask)
+        // createTask.on('click', handleAddTask)
 
-   
+
     $( '#datepicker' ).datepicker({
-        dateFormat: 'mm/dd/yyyy'
+        // dateFormat: 'mm/dd/yyyy'
     });
-
-    addTaskButton.on('click', handleAddTask)
 
     renderTaskList();
 
@@ -157,8 +167,7 @@ $(document).ready(function () {
         accept: '.draggable',
         drop: handleDrop,
       });
-  
+
+    // createTask.on('click', handleAddTask)
+    // addTaskButton.on('click', createTaskCard)
 });
-
-
-
